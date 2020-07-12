@@ -32,10 +32,11 @@ import java.util.Set;
  * A store of allowed tokens.
  */
 public class TokenStore {
-    private final BungeeGuardBackendPlugin plugin;
+
+    private final BungeeGuard plugin;
     private Set<String> allowedTokens;
 
-    public TokenStore(BungeeGuardBackendPlugin plugin) {
+    public TokenStore(BungeeGuard plugin) {
         this.plugin = plugin;
         load();
     }

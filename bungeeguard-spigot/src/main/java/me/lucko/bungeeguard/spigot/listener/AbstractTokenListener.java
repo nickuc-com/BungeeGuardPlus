@@ -26,7 +26,6 @@
 package me.lucko.bungeeguard.spigot.listener;
 
 import me.lucko.bungeeguard.spigot.TokenStore;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -35,17 +34,18 @@ import java.util.logging.Logger;
 /**
  * An abstract handshake listener.
  */
-public abstract class AbstractHandshakeListener {
+public abstract class AbstractTokenListener {
+
     protected final TokenStore tokenStore;
     protected final Logger logger;
+    protected final String noDataKickMessage, invalidTokenKickMessage;
 
-    protected final String noDataKickMessage;
-    protected final String invalidTokenKickMessage;
-
-    protected AbstractHandshakeListener(TokenStore tokenStore, Logger logger, ConfigurationSection config) {
+    protected AbstractTokenListener(TokenStore tokenStore, Logger logger, ConfigurationSection config) {
         this.tokenStore = tokenStore;
         this.logger = logger;
-        this.noDataKickMessage = ChatColor.translateAlternateColorCodes('&', config.getString("no-data-kick-message"));
-        this.invalidTokenKickMessage = ChatColor.translateAlternateColorCodes('&', config.getString("invalid-token-kick-message"));
+        String prefix = "§c[nLogin - BungeeGuard]\n§r";
+        this.noDataKickMessage = prefix + ChatColor.translateAlternateColorCodes('&', String.join("§r\n", config.getStringList("no-data-kick-message")));
+        this.invalidTokenKickMessage = prefix + ChatColor.translateAlternateColorCodes('&', String.join("§r\n", config.getStringList("invalid-token-kick-message")));
     }
+
 }

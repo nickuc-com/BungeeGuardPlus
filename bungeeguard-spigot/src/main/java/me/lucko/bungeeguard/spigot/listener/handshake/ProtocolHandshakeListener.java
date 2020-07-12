@@ -23,7 +23,7 @@
  *  SOFTWARE.
  */
 
-package me.lucko.bungeeguard.spigot.listener;
+package me.lucko.bungeeguard.spigot.listener.handshake;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -33,13 +33,10 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
-
-import me.lucko.bungeeguard.spigot.BungeeCordHandshake;
 import me.lucko.bungeeguard.spigot.TokenStore;
-
+import me.lucko.bungeeguard.spigot.listener.AbstractTokenListener;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -49,7 +46,8 @@ import java.util.logging.Logger;
 /**
  * A handshake listener using ProtocolLib.
  */
-public class ProtocolHandshakeListener extends AbstractHandshakeListener {
+public class ProtocolHandshakeListener extends AbstractTokenListener {
+
     public ProtocolHandshakeListener(TokenStore tokenStore, Logger logger, ConfigurationSection config) {
         super(tokenStore, logger, config);
     }
@@ -74,19 +72,13 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
             }
 
             String handshake = packet.getStrings().read(0);
-            BungeeCordHandshake decoded = BungeeCordHandshake.decodeAndVerify(handshake, ProtocolHandshakeListener.this.tokenStore);
+            BungeeCordHandshake decoded = BungeeCordHandshake.decodeAndVerify(handshake,  tokenStore);
 
             if (decoded instanceof BungeeCordHandshake.Fail) {
                 BungeeCordHandshake.Fail fail = (BungeeCordHandshake.Fail) decoded;
-                ProtocolHandshakeListener.this.logger.warning("Denying connection from " + fail.describeConnection() + " - reason: " + fail.reason().name());
+                logger.warning("[BungeeCord] Denying connection from " + fail.connectionDescription() + " - reason: " + fail.reason().name());
 
-                String kickMessage;
-                if (fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE) {
-                    kickMessage = ProtocolHandshakeListener.this.noDataKickMessage;
-                } else {
-                    kickMessage = ProtocolHandshakeListener.this.invalidTokenKickMessage;
-                }
-
+                String kickMessage = fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE ? noDataKickMessage : invalidTokenKickMessage;
                 try {
                     closeConnection(event.getPlayer(), kickMessage);
                 } catch (Exception e) {

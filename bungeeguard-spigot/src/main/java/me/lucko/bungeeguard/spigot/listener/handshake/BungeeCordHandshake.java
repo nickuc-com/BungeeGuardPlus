@@ -23,11 +23,16 @@
  *  SOFTWARE.
  */
 
-package me.lucko.bungeeguard.spigot;
+package me.lucko.bungeeguard.spigot.listener.handshake;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
+import me.lucko.bungeeguard.spigot.TokenStore;
 
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -108,40 +113,17 @@ public class BungeeCordHandshake {
         }
 
         String newPropertiesString = GSON.toJson(properties, PROPERTY_LIST_TYPE);
-        return new Success(serverHostname, socketAddressHostname, uniqueId, newPropertiesString);
+        return new Success(serverHostname, socketAddressHostname, newPropertiesString, uniqueId);
     }
 
     /**
      * Encapsulates a successful handshake.
      */
+    @RequiredArgsConstructor(access = AccessLevel.PACKAGE) @Getter @Accessors(fluent = true)
     public static final class Success extends BungeeCordHandshake {
-        private final String serverHostname;
-        private final String socketAddressHostname;
+
+        private final String serverHostname, socketAddressHostname, propertiesJson;
         private final UUID uniqueId;
-        private final String propertiesJson;
-
-        Success(String serverHostname, String socketAddressHostname, UUID uniqueId, String propertiesJson) {
-            this.serverHostname = serverHostname;
-            this.socketAddressHostname = socketAddressHostname;
-            this.uniqueId = uniqueId;
-            this.propertiesJson = propertiesJson;
-        }
-
-        public String serverHostname() {
-            return this.serverHostname;
-        }
-
-        public String socketAddressHostname() {
-            return this.socketAddressHostname;
-        }
-
-        public UUID uniqueId() {
-            return this.uniqueId;
-        }
-
-        public String propertiesJson() {
-            return this.propertiesJson;
-        }
 
         /**
          * Re-encodes this handshake to the format used by BungeeCord.
@@ -156,22 +138,11 @@ public class BungeeCordHandshake {
     /**
      * Encapsulates an unsuccessful handshake.
      */
+    @RequiredArgsConstructor(access = AccessLevel.PACKAGE) @Getter @Accessors(fluent = true)
     public static final class Fail extends BungeeCordHandshake {
+
         private final Reason reason;
         private final String connectionDescription;
-
-        Fail(Reason reason, String connectionDescription) {
-            this.reason = reason;
-            this.connectionDescription = connectionDescription;
-        }
-
-        public Reason reason() {
-            return this.reason;
-        }
-
-        public String describeConnection() {
-            return this.connectionDescription;
-        }
 
         public enum Reason {
             INVALID_HANDSHAKE, NO_TOKEN, INCORRECT_TOKEN

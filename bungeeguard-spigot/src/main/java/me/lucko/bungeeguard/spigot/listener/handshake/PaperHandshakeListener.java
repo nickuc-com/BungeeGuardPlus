@@ -23,13 +23,11 @@
  *  SOFTWARE.
  */
 
-package me.lucko.bungeeguard.spigot.listener;
+package me.lucko.bungeeguard.spigot.listener.handshake;
 
 import com.destroystokyo.paper.event.player.PlayerHandshakeEvent;
-
-import me.lucko.bungeeguard.spigot.BungeeCordHandshake;
 import me.lucko.bungeeguard.spigot.TokenStore;
-
+import me.lucko.bungeeguard.spigot.listener.AbstractTokenListener;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -40,25 +38,20 @@ import java.util.logging.Logger;
 /**
  * A handshake listener using Paper's {@link PlayerHandshakeEvent}.
  */
-public class PaperHandshakeListener extends AbstractHandshakeListener implements Listener {
+public class PaperHandshakeListener extends AbstractTokenListener implements Listener {
+
     public PaperHandshakeListener(TokenStore tokenStore, Logger logger, ConfigurationSection config) {
         super(tokenStore, logger, config);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onHandshake(PlayerHandshakeEvent e) {
-        BungeeCordHandshake decoded = BungeeCordHandshake.decodeAndVerify(e.getOriginalHandshake(), this.tokenStore);
+        BungeeCordHandshake decoded = BungeeCordHandshake.decodeAndVerify(e.getOriginalHandshake(), tokenStore);
 
         if (decoded instanceof BungeeCordHandshake.Fail) {
             BungeeCordHandshake.Fail fail = (BungeeCordHandshake.Fail) decoded;
-            this.logger.warning("Denying connection from " + fail.describeConnection() + " - reason: " + fail.reason().name());
-
-            if (fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE) {
-                e.setFailMessage(this.noDataKickMessage);
-            } else {
-                e.setFailMessage(this.invalidTokenKickMessage);
-            }
-
+            logger.warning("[BungeeCord] Denying connection from " + fail.connectionDescription() + " - reason: " + fail.reason().name());
+            e.setFailMessage(fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE ? noDataKickMessage : invalidTokenKickMessage);
             e.setFailed(true);
             return;
         }

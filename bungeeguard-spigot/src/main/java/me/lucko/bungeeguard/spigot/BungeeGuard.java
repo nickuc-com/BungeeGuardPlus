@@ -25,13 +25,23 @@
 
 package me.lucko.bungeeguard.spigot;
 
-import me.lucko.bungeeguard.spigot.listener.PaperHandshakeListener;
-import me.lucko.bungeeguard.spigot.listener.ProtocolHandshakeListener;
-
+import lombok.RequiredArgsConstructor;
+import me.lucko.bungeeguard.spigot.listener.handshake.PaperHandshakeListener;
+import me.lucko.bungeeguard.spigot.listener.handshake.ProtocolHandshakeListener;
+import me.lucko.bungeeguard.spigot.listener.login.LoginEventListener;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -40,7 +50,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * The token is included within the player's profile properties, but removed during the handshake.
  */
-public class BungeeGuardBackendPlugin extends JavaPlugin {
+@RequiredArgsConstructor
+public class BungeeGuard extends JavaPlugin implements Listener {
 
     private TokenStore tokenStore;
 
@@ -62,36 +73,11 @@ public class BungeeGuardBackendPlugin extends JavaPlugin {
             listener.registerAdapter(this);
 
         } else {
-            getLogger().severe("------------------------------------------------------------");
-            getLogger().severe("BungeeGuard is unable to listen for handshakes! The server will now shut down.");
-            getLogger().severe("");
-            if (isPaperServer()) {
-                getLogger().severe("Please install ProtocolLib in order to use this plugin.");
-            } else {
-                getLogger().severe("If your server is using 1.9.4 or newer, please upgrade to Paper - https://papermc.io");
-                getLogger().severe("If your server is using 1.8.8 or older, please install ProtocolLib.");
-            }
-            getLogger().severe("------------------------------------------------------------");
-            getServer().shutdown();
-        }
-    }
+            getLogger().info("Using PlayerLoginEvent to listen for connections.");
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof ConsoleCommandSender)) {
-            sender.sendMessage(ChatColor.RED + "Sorry, this command can only be ran from the console.");
-            return true;
+            LoginEventListener listener = new LoginEventListener(this.tokenStore, getLogger(), getConfig());
+            getServer().getPluginManager().registerEvents(listener, this);
         }
-
-        if (args.length == 0 || !args[0].equalsIgnoreCase("reload")) {
-            sender.sendMessage(ChatColor.RED + "Running BungeeGuard v" + getDescription().getVersion());
-            sender.sendMessage(ChatColor.GRAY + "Use '/bungeeguard reload' to reload the configuration.");
-            return true;
-        }
-
-        this.tokenStore.reload();
-        sender.sendMessage(ChatColor.RED + "BungeeGuard configuration reloaded.");
-        return true;
     }
 
     private static boolean isPaperHandshakeEvent() {
@@ -112,6 +98,56 @@ public class BungeeGuardBackendPlugin extends JavaPlugin {
             return true;
         } catch (ClassNotFoundException e) {
             return false;
+        }
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof ConsoleCommandSender)) {
+            sender.sendMessage(ChatColor.RED + "Sorry, this command can only be ran from the console.");
+            return true;
+        }
+
+        if (args.length == 0 || !args[0].equalsIgnoreCase("reload")) {
+            sender.sendMessage(ChatColor.RED + "Running BungeeGuard v" + getDescription().getVersion() + " (Adapted for nLogin)");
+            sender.sendMessage(ChatColor.GRAY + "Use '/bungeeguard reload' to reload the configuration.");
+            return true;
+        }
+
+        this.tokenStore.reload();
+        sender.sendMessage(ChatColor.RED + "BungeeGuard configuration reloaded.");
+        return true;
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
+        Player player = Bukkit.getPlayerExact(e.getName());
+        if (player != null) {
+            e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cDesculpe, mas um jogador com o mesmo nome já está online.");
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerLogin(PlayerLoginEvent e) {
+        Player player = Bukkit.getPlayerExact(e.getPlayer().getName());
+        if (player != null) {
+            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§cDesculpe, mas um jogador com o mesmo nome já está online.");
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerKick(PlayerKickEvent e) {
+        if (e.getReason().contains("You logged in from another location")) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
+        String message = e.getMessage().toLowerCase();
+        if (message.contains("bungeeguard") && (message.contains("plugman") || message.contains("system"))) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage("§cVocê não pode mexer no controlador de tokens por aqui.");
         }
     }
 
