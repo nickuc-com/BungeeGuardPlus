@@ -11,4 +11,3 @@ commands:
   bungeeguard:
     description: Reloads the configuration
     permission: bungeeguard.reload
-    usage: /bungeeguard reload

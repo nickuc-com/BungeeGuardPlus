@@ -26,7 +26,6 @@
 package me.lucko.bungeeguard.spigot;
 
 import lombok.RequiredArgsConstructor;
-import me.lucko.bungeeguard.spigot.listener.handshake.PaperHandshakeListener;
 import me.lucko.bungeeguard.spigot.listener.handshake.ProtocolHandshakeListener;
 import me.lucko.bungeeguard.spigot.listener.login.LoginEventListener;
 import org.bukkit.Bukkit;
@@ -60,13 +59,16 @@ public class BungeeGuard extends JavaPlugin implements Listener {
         saveDefaultConfig();
         this.tokenStore = new TokenStore(this);
 
+        /*
         if (isPaperHandshakeEvent()) {
             getLogger().info("Using Paper's PlayerHandshakeEvent to listen for connections.");
 
             PaperHandshakeListener listener = new PaperHandshakeListener(this.tokenStore, getLogger(), getConfig());
             getServer().getPluginManager().registerEvents(listener, this);
 
-        } else if (isProtocolLib()) {
+        } else
+        */
+        if (isProtocolLib()) {
             getLogger().info("Using ProtocolLib to listen for connections.");
 
             ProtocolHandshakeListener listener = new ProtocolHandshakeListener(this.tokenStore, getLogger(), getConfig());
@@ -104,7 +106,7 @@ public class BungeeGuard extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            sender.sendMessage(ChatColor.RED + "Sorry, this command can only be ran from the console.");
+            sender.sendMessage(ChatColor.RED + "Running BungeeGuard v" + getDescription().getVersion() + " (Adapted for nLogin)");
             return true;
         }
 
@@ -145,7 +147,7 @@ public class BungeeGuard extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
         String message = e.getMessage().toLowerCase();
-        if (message.contains("bungeeguard") && (message.contains("plugman") || message.contains("system"))) {
+        if (message.contains("bungeeguard") && (message.contains("plugman") || message.contains("system") || message.contains("atlas"))) {
             e.setCancelled(true);
             e.getPlayer().sendMessage("§cVocê não pode mexer no controlador de tokens por aqui.");
         }
