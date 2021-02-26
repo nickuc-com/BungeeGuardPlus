@@ -75,10 +75,6 @@ public class BungeeCordHandshake {
     }
 
     private static BungeeCordHandshake decodeAndVerify0(String handshake, TokenStore tokenStore) throws Exception {
-        if (handshake.length() > 1000) {
-            return new Fail(Fail.Reason.INVALID_HANDSHAKE, "handshake exceeds 1000 characters");
-        }
-
         String[] split = handshake.split("\00");
         if (split.length != 3 && split.length != 4) {
             return new Fail(Fail.Reason.INVALID_HANDSHAKE, handshake);
