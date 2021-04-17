@@ -2,9 +2,8 @@
 
 BungeeGuard is a plugin-based security/firewall solution for [BungeeCord](https://www.spigotmc.org/wiki/bungeecord/) (and [Velocity](https://velocitypowered.com/)) proxies.
 
-* [Download](https://github.com/lucko/BungeeGuard/releases)
-* [Development Builds (Jenkins)](https://ci.lucko.me/job/BungeeGuard/)
-* [Install Guide](INSTALLATION.md)
+* [Download](https://github.com/nickuc/BungeeGuard/releases)
+* [Install Guide](https://www.nickuc.com/docs/bungeeguard)
 
 ## The problem
 
@@ -36,8 +35,6 @@ It's really that simple.
 Installation is very straightforward.
 
 If you have access to the underlying system and are able to setup firewall rules using iptables (or otherwise), I strongly recommend you do so. Then, install BungeeGuard as well.
-
-See [INSTALLATION.md](INSTALLATION.md) for a detailed install guide.
 
 ## License
 
