@@ -38,4 +38,4 @@ If you have access to the underlying system and are able to setup firewall rules
 
 ## License
 
-BungeeGuard is licensed and made available under the permissive MIT license. Please see [LICENSE.txt](INSTALLATION.md) for more information.
+BungeeGuard is licensed and made available under the permissive MIT license. Please see [LICENSE.txt](LICENSE.txt) for more information.
