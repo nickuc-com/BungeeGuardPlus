@@ -67,9 +67,9 @@ public class ProtocolHandshakeListener extends AbstractTokenListener {
 
             // only handle the LOGIN phase
             PacketType.Protocol state = packet.getProtocols().read(0);
-            if (state != PacketType.Protocol.LOGIN) {
-                return;
-            }
+//            if (state != PacketType.Protocol.LOGIN) {
+//                return;
+//            }
 
             String handshake = packet.getStrings().read(0);
             BungeeCordHandshake decoded = BungeeCordHandshake.decodeAndVerify(handshake,  tokenStore);
@@ -82,7 +82,7 @@ public class ProtocolHandshakeListener extends AbstractTokenListener {
 
                 String kickMessage = fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE ? noDataKickMessage : invalidTokenKickMessage;
                 try {
-                    closeConnection(event.getPlayer(), kickMessage);
+                    closeConnection(event.getPlayer(), kickMessage, state == PacketType.Protocol.LOGIN);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -101,14 +101,16 @@ public class ProtocolHandshakeListener extends AbstractTokenListener {
         }
     }
 
-    private static void closeConnection(Player player, String kickMessage) throws Exception {
-        PacketContainer packet = new PacketContainer(PacketType.Login.Server.DISCONNECT);
-        packet.getModifier().writeDefaults();
+    private static void closeConnection(Player player, String kickMessage, boolean login) throws Exception {
+        if (login) {
+            PacketContainer packet = new PacketContainer(PacketType.Login.Server.DISCONNECT);
+            packet.getModifier().writeDefaults();
 
-        WrappedChatComponent component = WrappedChatComponent.fromJson(ComponentSerializer.toString(TextComponent.fromLegacyText(kickMessage)));
-        packet.getChatComponents().write(0, component);
+            WrappedChatComponent component = WrappedChatComponent.fromJson(ComponentSerializer.toString(TextComponent.fromLegacyText(kickMessage)));
+            packet.getChatComponents().write(0, component);
 
-        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+        }
         TemporaryPlayerFactory.getInjectorFromPlayer(player).getSocket().close();
     }
 
