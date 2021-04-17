@@ -50,7 +50,9 @@ public class PaperHandshakeListener extends AbstractTokenListener implements Lis
 
         if (decoded instanceof BungeeCordHandshake.Fail) {
             BungeeCordHandshake.Fail fail = (BungeeCordHandshake.Fail) decoded;
-            logger.warning("[BungeeCord] Denying connection from " + fail.connectionDescription() + " - reason: " + fail.reason().name());
+            if (!isThrottled()) {
+                logger.warning("[BungeeCord] Denying connection from " + fail.connectionDescription() + " - reason: " + fail.reason().name());
+            }
             e.setFailMessage(fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE ? noDataKickMessage : invalidTokenKickMessage);
             e.setFailed(true);
             return;
