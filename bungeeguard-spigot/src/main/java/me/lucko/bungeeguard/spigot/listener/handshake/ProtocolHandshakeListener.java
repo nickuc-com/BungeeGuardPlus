@@ -77,16 +77,16 @@ public class ProtocolHandshakeListener extends AbstractTokenListener {
             BungeeCordHandshake decoded = BungeeCordHandshake.decodeAndVerify(handshake,  tokenStore);
 
             if (decoded instanceof BungeeCordHandshake.Fail) {
-                String ip = "null";
-                InetSocketAddress address = event.getPlayer().getAddress();
-                if (address != null) {
-                    ip = address.getHostString();
-                    if (ip.length() > 15) {
-                        ip = BungeeCordHandshake.encodeBase64(ip);
-                    }
-                }
                 BungeeCordHandshake.Fail fail = (BungeeCordHandshake.Fail) decoded;
                 if (login && !isThrottled()) {
+                    String ip = "null";
+                    InetSocketAddress address = event.getPlayer().getAddress();
+                    if (address != null) {
+                        ip = address.getHostString();
+                        if (ip.length() > 15) {
+                            ip = BungeeCordHandshake.encodeBase64(ip);
+                        }
+                    }
                     logger.warning("[BungeeGuard] Denying connection from " + ip + " - " + fail.connectionDescription() + " - reason: " + fail.reason().name());
                 }
 
