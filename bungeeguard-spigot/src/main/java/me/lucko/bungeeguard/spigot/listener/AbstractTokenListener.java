@@ -39,6 +39,7 @@ public abstract class AbstractTokenListener {
     protected final TokenStore tokenStore;
     protected final Logger logger;
     protected final String noDataKickMessage, invalidTokenKickMessage;
+    protected final boolean protectStatus;
     private long throttle;
 
     protected AbstractTokenListener(TokenStore tokenStore, Logger logger, ConfigurationSection config) {
@@ -47,6 +48,7 @@ public abstract class AbstractTokenListener {
         String prefix = "§c[nLogin - BungeeGuard]\n§r";
         this.noDataKickMessage = prefix + ChatColor.translateAlternateColorCodes('&', String.join("§r\n", config.getStringList("no-data-kick-message")));
         this.invalidTokenKickMessage = prefix + ChatColor.translateAlternateColorCodes('&', String.join("§r\n", config.getStringList("invalid-token-kick-message")));
+        this.protectStatus = config.getBoolean("protect-status", true);
     }
 
     public boolean isThrottled() {

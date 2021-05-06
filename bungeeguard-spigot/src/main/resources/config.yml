@@ -4,6 +4,9 @@
 # Allowed authentication tokens.
 allowed-tokens: []
 
+# Protect against status requests made outside the proxy.
+protect-status: true
+
 # Kick message sent to connections without any forwarded data from the proxy.
 # Most likely a vanilla client connecting directly to the server, bypassing the proxy.
 no-data-kick-message:

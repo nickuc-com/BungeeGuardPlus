@@ -41,6 +41,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.net.InetSocketAddress;
 import java.util.logging.Logger;
 
 /**
@@ -67,22 +68,31 @@ public class ProtocolHandshakeListener extends AbstractTokenListener {
 
             // only handle the LOGIN phase
             PacketType.Protocol state = packet.getProtocols().read(0);
-//            if (state != PacketType.Protocol.LOGIN) {
-//                return;
-//            }
+            boolean login = state == PacketType.Protocol.LOGIN;
+            if (!login && !protectStatus) {
+                return;
+            }
 
             String handshake = packet.getStrings().read(0);
             BungeeCordHandshake decoded = BungeeCordHandshake.decodeAndVerify(handshake,  tokenStore);
 
             if (decoded instanceof BungeeCordHandshake.Fail) {
+                String ip = "null";
+                InetSocketAddress address = event.getPlayer().getAddress();
+                if (address != null) {
+                    ip = address.getHostString();
+                    if (ip.length() > 15) {
+                        ip = BungeeCordHandshake.encodeBase64(ip);
+                    }
+                }
                 BungeeCordHandshake.Fail fail = (BungeeCordHandshake.Fail) decoded;
-                if (!isThrottled()) {
-                    logger.warning("[BungeeCord] Denying connection from " + fail.connectionDescription() + " - reason: " + fail.reason().name());
+                if (login && !isThrottled()) {
+                    logger.warning("[BungeeGuard] Denying connection from " + ip + " - " + fail.connectionDescription() + " - reason: " + fail.reason().name());
                 }
 
                 String kickMessage = fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE ? noDataKickMessage : invalidTokenKickMessage;
                 try {
-                    closeConnection(event.getPlayer(), kickMessage, state == PacketType.Protocol.LOGIN);
+                    closeConnection(event.getPlayer(), kickMessage, login);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
