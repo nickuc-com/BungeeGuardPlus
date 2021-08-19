@@ -42,12 +42,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
  * A handshake listener using ProtocolLib.
  */
 public class ProtocolHandshakeListener extends AbstractTokenListener {
+
+    private static final Set<String> ALLOWED_ADDRESSES = new HashSet<>(Arrays.asList("localhost", "127.0.0.1", "172.17.0.1"));
 
     public ProtocolHandshakeListener(TokenStore tokenStore, Logger logger, ConfigurationSection config) {
         super(tokenStore, logger, config);
@@ -69,7 +74,7 @@ public class ProtocolHandshakeListener extends AbstractTokenListener {
             // only handle the LOGIN phase
             PacketType.Protocol state = packet.getProtocols().read(0);
             boolean login = state == PacketType.Protocol.LOGIN;
-            if (!login && !protectStatus) {
+            if (!login && !protectStatus && isAllowed(event.getPlayer().getAddress().getAddress().getHostAddress())) {
                 return;
             }
 
@@ -122,6 +127,10 @@ public class ProtocolHandshakeListener extends AbstractTokenListener {
             ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
         }
         TemporaryPlayerFactory.getInjectorFromPlayer(player).getSocket().close();
+    }
+
+    private static boolean isAllowed(String address) {
+        return ALLOWED_ADDRESSES.contains(address);
     }
 
 }
