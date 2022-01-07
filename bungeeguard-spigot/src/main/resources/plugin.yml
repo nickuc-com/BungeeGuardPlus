@@ -1,7 +1,7 @@
 name: BungeeGuard
 version: ${project.version}
 description: A plugin-based security/firewall solution for BungeeCord and Velocity proxies.
-author: Luck
+authors: [Luck, NickUC]
 
 main: me.lucko.bungeeguard.spigot.BungeeGuardBackendPlugin
 softdepend: [ProtocolLib]

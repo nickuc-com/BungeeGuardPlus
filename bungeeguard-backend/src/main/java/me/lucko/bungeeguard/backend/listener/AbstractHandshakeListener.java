@@ -41,7 +41,7 @@ public abstract class AbstractHandshakeListener {
     protected AbstractHandshakeListener(BungeeGuardBackend plugin, TokenStore tokenStore) {
         this.plugin = plugin;
         this.tokenStore = tokenStore;
-        this.noDataKickMessage = plugin.getMessage("no-data-kick-message");
-        this.invalidTokenKickMessage = plugin.getMessage("invalid-token-kick-message");
+        this.noDataKickMessage = plugin.getKickMessage("no-data-kick-message");
+        this.invalidTokenKickMessage = plugin.getKickMessage("invalid-token-kick-message");
     }
 }

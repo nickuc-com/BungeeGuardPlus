@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface BungeeGuardBackend {
 
-    String getMessage(String key);
+    String getKickMessage(String key);
 
     List<String> getTokens();
 

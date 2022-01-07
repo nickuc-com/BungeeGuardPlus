@@ -63,7 +63,7 @@ import java.util.List;
         name = "BungeeGuard",
         version = BungeeGuardVersion.VERSION,
         description = "Plugin which adds a security token to the BungeeCord handshaking protocol",
-        authors = "Luck"
+        authors = {"Luck", "NickUC"}
 )
 public final class BungeeGuardSponge implements BungeeGuardBackend, CommandExecutor {
 
@@ -105,17 +105,20 @@ public final class BungeeGuardSponge implements BungeeGuardBackend, CommandExecu
 
         Sponge.getCommandManager().register(this, command, "bungeeguard");
         Sponge.getEventManager().registerListeners(this, new HandshakeListener(this, this.tokenStore, this.logger));
+
+        // prevents unloading the plugin at runtime
+        Sponge.getEventManager().registerListeners(this, new PluginDisableProtection());
     }
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) {
         if (!(src instanceof ConsoleSource)) {
-            src.sendMessage(Text.of(TextColors.RED, "Sorry, this command can only be ran from the console."));
+            src.sendMessage(Text.of(TextColors.RED, "Running BungeeGuard v" + BungeeGuardVersion.VERSION + " (Adapted for nLogin)"));
             return CommandResult.empty();
         }
 
         if (!args.hasAny(Text.of("reload"))) {
-            src.sendMessage(Text.of(TextColors.RED, "Running BungeeGuard v" + BungeeGuardVersion.VERSION));
+            src.sendMessage(Text.of(TextColors.RED, "Running BungeeGuard v" + BungeeGuardVersion.VERSION + " (Adapted for nLogin)"));
             src.sendMessage(Text.of(TextColors.GRAY, "Use '/bungeeguard reload' to reload the configuration."));
 
             return CommandResult.empty();
@@ -137,8 +140,13 @@ public final class BungeeGuardSponge implements BungeeGuardBackend, CommandExecu
     }
 
     @Override
-    public String getMessage(String key) {
-        return this.config.getNode(key).getString();
+    public String getKickMessage(String key) {
+        try {
+            return String.join("\n§r", config.getNode(key).getList(TypeToken.of(String.class)));
+        } catch (ObjectMappingException e) {
+            this.logger.error("Unable to load tokens", e);
+            return "Message error";
+        }
     }
 
     @Override

@@ -76,12 +76,17 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
         // load a token from the config, if present
         ConfigurationProvider provider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 
-        getDataFolder().mkdirs();
-        File file = new File(getDataFolder(), "token.yml");
+        File pluginFolder = getDataFolder();
+        if (!pluginFolder.exists() && !pluginFolder.mkdirs()) {
+            getLogger().log(Level.SEVERE, "Could not create BungeeGuard folder. Shutting down the server...");
+            getProxy().stop();
+            return;
+        }
 
-        if (file.exists()) {
+        File tokenFile = new File(pluginFolder, "token.yml");
+        if (tokenFile.exists()) {
             try {
-                Configuration configuration = provider.load(file);
+                Configuration configuration = provider.load(tokenFile);
                 this.token = configuration.getString("token", null);
             } catch (Exception e) {
                 getLogger().log(Level.SEVERE, "Unable to load token from config", e);
@@ -95,7 +100,7 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
             configuration.set("token", this.token);
 
             try {
-                provider.save(configuration, file);
+                provider.save(configuration, tokenFile);
             } catch (Exception e) {
                 getLogger().log(Level.SEVERE, "Unable to save token in the config", e);
             }
@@ -104,7 +109,9 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
         getProxy().getPluginManager().registerListener(this, this);
     }
 
-    @EventHandler
+    // In some skin plugins, the Property[] value of the player profile can be overridden
+    // To prevent the BungeeGuard property from being lost, we will use a high priority.
+    @EventHandler(priority = Byte.MAX_VALUE - 1)
     public void onLogin(LoginEvent e) {
         // inject our spoofed loginresult instance into the initial handler
         InitialHandler con = (InitialHandler) e.getConnection();

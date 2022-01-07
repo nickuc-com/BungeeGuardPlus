@@ -28,6 +28,7 @@ package me.lucko.bungeeguard.spigot;
 import me.lucko.bungeeguard.backend.BungeeGuardBackend;
 import me.lucko.bungeeguard.backend.TokenStore;
 import me.lucko.bungeeguard.spigot.listener.PaperHandshakeListener;
+import me.lucko.bungeeguard.spigot.listener.PluginDisableProtection;
 import me.lucko.bungeeguard.spigot.listener.ProtocolHandshakeListener;
 
 import org.bukkit.ChatColor;
@@ -79,17 +80,20 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
             getLogger().severe("------------------------------------------------------------");
             getServer().shutdown();
         }
+
+        // prevents unloading the plugin at runtime
+        getServer().getPluginManager().registerEvents(new PluginDisableProtection(), this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            sender.sendMessage(ChatColor.RED + "Sorry, this command can only be ran from the console.");
+            sender.sendMessage(ChatColor.RED + "Running BungeeGuard v" + getDescription().getVersion() + " (Adapted for nLogin)");
             return true;
         }
 
         if (args.length == 0 || !args[0].equalsIgnoreCase("reload")) {
-            sender.sendMessage(ChatColor.RED + "Running BungeeGuard v" + getDescription().getVersion());
+            sender.sendMessage(ChatColor.RED + "Running BungeeGuard v" + getDescription().getVersion() + " (Adapted for nLogin)");
             sender.sendMessage(ChatColor.GRAY + "Use '/bungeeguard reload' to reload the configuration.");
             return true;
         }
@@ -100,8 +104,8 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
     }
 
     @Override
-    public String getMessage(String key) {
-        return ChatColor.translateAlternateColorCodes('&', getConfig().getString(key));
+    public String getKickMessage(String key) {
+        return ChatColor.translateAlternateColorCodes('&', String.join("\n§r", getConfig().getStringList(key)));
     }
 
     @Override

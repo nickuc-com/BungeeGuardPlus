@@ -129,17 +129,23 @@ abstract class SpoofedLoginResult extends LoginResult {
 
     @Override
     public String getId() {
+        // some plugins may require this method even with offline-mode. By default, we will return the value of the original class.
+        /*
         if (this.offline) {
             throw new RuntimeException("getId called for offline variant of SpoofedLoginResult");
         }
+         */
         return super.getId();
     }
 
     @Override
     public String getName() {
+        // some plugins may require this method even with offline-mode. By default, we will return the value of the original class.
+        /*
         if (this.offline) {
             throw new RuntimeException("getId called for offline variant of SpoofedLoginResult");
         }
+         */
         return super.getId();
     }
 }
