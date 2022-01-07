@@ -3,7 +3,6 @@
 BungeeGuard is a plugin-based security/firewall solution for [BungeeCord](https://www.spigotmc.org/wiki/bungeecord/) (and [Velocity](https://velocitypowered.com/)) proxies.
 
 * [Download](https://github.com/nickuc/BungeeGuard/releases)
-* [Development Builds (Jenkins)](https://ci.lucko.me/job/BungeeGuard/)
 * [Install Guide](INSTALLATION.md)
 
 ## The problem
