@@ -12,6 +12,10 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.command.SendCommandEvent;
 
+/**
+ * Some management plugins may have a function to unload the plugin at runtime. E.g. PlugMan.
+ * By disallowing some of these commands, you can decrease the chance that someone will mess up the storage of UUIDs by bypassing BungeeGuard.
+ */
 public class PluginDisableProtection {
 
     private static final ImmutableSet<String> BLOCKED_COMMANDS = ImmutableSet.of("plugman", "system", "atlas");
