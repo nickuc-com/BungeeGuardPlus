@@ -28,7 +28,7 @@ package me.lucko.bungeeguard.spigot;
 import me.lucko.bungeeguard.backend.BungeeGuardBackend;
 import me.lucko.bungeeguard.backend.TokenStore;
 import me.lucko.bungeeguard.spigot.listener.PaperHandshakeListener;
-import me.lucko.bungeeguard.spigot.listener.PluginDisableProtection;
+import me.lucko.bungeeguard.spigot.listener.ExtraProtectionListener;
 import me.lucko.bungeeguard.spigot.listener.ProtocolHandshakeListener;
 
 import org.bukkit.ChatColor;
@@ -38,6 +38,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Simple plugin which overrides the BungeeCord handshake protocol, and cancels all
@@ -55,34 +56,36 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
         this.tokenStore = new TokenStore(this);
         this.tokenStore.load();
 
+        Logger logger = getLogger();
         if (isPaperHandshakeEvent()) {
-            getLogger().info("Using Paper's PlayerHandshakeEvent to listen for connections.");
+            logger.info("Using Paper's PlayerHandshakeEvent to listen for connections.");
 
             PaperHandshakeListener listener = new PaperHandshakeListener(this, this.tokenStore);
             getServer().getPluginManager().registerEvents(listener, this);
 
         } else if (hasProtocolLib()) {
-            getLogger().info("Using ProtocolLib to listen for connections.");
+            logger.info("Using ProtocolLib to listen for connections.");
 
             ProtocolHandshakeListener listener = new ProtocolHandshakeListener(this, this.tokenStore);
             listener.registerAdapter(this);
 
         } else {
-            getLogger().severe("------------------------------------------------------------");
-            getLogger().severe("BungeeGuard is unable to listen for handshakes! The server will now shut down.");
-            getLogger().severe("");
+            logger.severe("------------------------------------------------------------");
+            logger.severe("BungeeGuard is unable to listen for handshakes! The server will now shut down.");
+            logger.severe("");
             if (isPaperServer()) {
-                getLogger().severe("Please install ProtocolLib in order to use this plugin.");
+                logger.severe("Please install ProtocolLib in order to use this plugin.");
             } else {
-                getLogger().severe("If your server is using 1.9.4 or newer, please upgrade to Paper - https://papermc.io");
-                getLogger().severe("If your server is using 1.8.8 or older, please install ProtocolLib.");
+                logger.severe("If your server is using 1.9.4 or newer, please upgrade to Paper - https://papermc.io");
+                logger.severe("If your server is using 1.8.8 or older, please install ProtocolLib.");
             }
-            getLogger().severe("------------------------------------------------------------");
+            logger.severe("------------------------------------------------------------");
             getServer().shutdown();
+            return;
         }
 
         // prevents unloading the plugin at runtime
-        getServer().getPluginManager().registerEvents(new PluginDisableProtection(), this);
+        getServer().getPluginManager().registerEvents(new ExtraProtectionListener(logger), this);
     }
 
     @Override

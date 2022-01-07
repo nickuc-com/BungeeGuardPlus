@@ -107,7 +107,7 @@ public final class BungeeGuardSponge implements BungeeGuardBackend, CommandExecu
         Sponge.getEventManager().registerListeners(this, new HandshakeListener(this, this.tokenStore, this.logger));
 
         // prevents unloading the plugin at runtime
-        Sponge.getEventManager().registerListeners(this, new PluginDisableProtection());
+        Sponge.getEventManager().registerListeners(this, new ExtraProtectionListener());
     }
 
     @Override
