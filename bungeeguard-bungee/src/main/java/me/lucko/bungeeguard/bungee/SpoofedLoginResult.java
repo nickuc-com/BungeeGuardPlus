@@ -41,6 +41,9 @@ import java.util.Arrays;
  * to modify the properties without leaking the token to other clients via the tablist.
  */
 abstract class SpoofedLoginResult extends LoginResult {
+
+    private static final String SERVER_CONNECTOR = "net.md_5.bungee.ServerConnector";
+
     private static final Field PROFILE_FIELD;
     private static final Constructor<? extends SpoofedLoginResult> OFFLINE_MODE_IMPL;
     private static final Constructor<? extends SpoofedLoginResult> ONLINE_MODE_IMPL;
@@ -52,7 +55,12 @@ abstract class SpoofedLoginResult extends LoginResult {
             Class.forName("java.lang.StackWalker");
             implClass = Class.forName("me.lucko.bungeeguard.bungee.SpoofedLoginResultJava9").asSubclass(SpoofedLoginResult.class);
         } catch (ClassNotFoundException e) {
-            implClass = SpoofedLoginResultJava8.class;
+            try {
+                Class.forName("jdk.internal.reflect.Reflection");
+                implClass = SpoofedLoginResultJava8.class;
+            } catch (ClassNotFoundException e2) {
+                implClass = SpoofedLoginResultLegacy.class;
+            }
         }
 
         try {
@@ -111,6 +119,15 @@ abstract class SpoofedLoginResult extends LoginResult {
     protected Property[] getSpoofedProperties(Class<?> caller) {
         // if the getProperties method is being called by the server connector, include our token in the properties
         if (caller == ServerConnector.class) {
+            return addTokenProperty(super.getProperties());
+        } else {
+            return super.getProperties();
+        }
+    }
+
+    protected Property[] getSpoofedProperties(String className) {
+        // if the getProperties method is being called by the server connector, include our token in the properties
+        if (className.equals(SERVER_CONNECTOR)) {
             return addTokenProperty(super.getProperties());
         } else {
             return super.getProperties();
