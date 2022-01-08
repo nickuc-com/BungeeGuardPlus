@@ -38,10 +38,22 @@ public abstract class AbstractHandshakeListener {
     protected final String noDataKickMessage;
     protected final String invalidTokenKickMessage;
 
+    private long throttle;
+
     protected AbstractHandshakeListener(BungeeGuardBackend plugin, TokenStore tokenStore) {
         this.plugin = plugin;
         this.tokenStore = tokenStore;
         this.noDataKickMessage = plugin.getKickMessage("no-data-kick-message");
         this.invalidTokenKickMessage = plugin.getKickMessage("invalid-token-kick-message");
+    }
+
+    public boolean isThrottled() {
+        long cur = System.currentTimeMillis();
+        if (cur - this.throttle >= 1000L) {
+            this.throttle = cur;
+            return false;
+        } else {
+            return true;
+        }
     }
 }

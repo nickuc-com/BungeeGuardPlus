@@ -66,10 +66,13 @@ public class HandshakeListener extends AbstractHandshakeListener {
         }
 
         if (bungeeGuardToken == null || !this.tokenStore.isAllowed(bungeeGuardToken)) {
-            String connectionDescription = profile.getUniqueId() + " @ " + e.getConnection().getAddress().getHostString();
-            String reason = bungeeGuardToken == null ? "No Token" : "Invalid token";
+            // if the logging is not throttled, we send the error message
+            if (!isThrottled()) {
+                String connectionDescription = profile.getUniqueId() + " @ " + e.getConnection().getAddress().getHostString();
+                String reason = bungeeGuardToken == null ? "No Token" : "Invalid token";
 
-            this.logger.warn("Denying connection from " + connectionDescription + " - reason: " + reason);
+                this.logger.warn("Denying connection from " + connectionDescription + " - reason: " + reason);
+            }
 
             e.setMessage(bungeeGuardToken == null ? this.noDataKickText : this.invalidTokenKickText);
             e.setCancelled(true);

@@ -80,17 +80,21 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
             BungeeCordHandshake decoded = BungeeCordHandshake.decodeAndVerify(handshake, ProtocolHandshakeListener.this.tokenStore);
 
             if (decoded instanceof BungeeCordHandshake.Fail) {
-                String ip = "null";
-                Player player = event.getPlayer();
-                InetSocketAddress address = player.getAddress();
-                if (address != null) {
-                    ip = address.getHostString();
-                    if (ip.length() > 15) {
-                        ip = BungeeCordHandshake.encodeBase64(ip);
-                    }
-                }
                 BungeeCordHandshake.Fail fail = (BungeeCordHandshake.Fail) decoded;
-                this.plugin.getLogger().warning("Denying connection from " + ip + " - " + fail.describeConnection() + " - reason: " + fail.reason().name());
+                Player player = event.getPlayer();
+
+                // if the logging is not throttled, we send the error message
+                if (!isThrottled()) {
+                    String ip = "null";
+                    InetSocketAddress address = player.getAddress();
+                    if (address != null) {
+                        ip = address.getHostString();
+                        if (ip.length() > 15) {
+                            ip = BungeeCordHandshake.encodeBase64(ip);
+                        }
+                    }
+                    this.plugin.getLogger().warning("Denying connection from " + ip + " - " + fail.describeConnection() + " - reason: " + fail.reason().name());
+                }
 
                 String kickMessage;
                 if (fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE) {
