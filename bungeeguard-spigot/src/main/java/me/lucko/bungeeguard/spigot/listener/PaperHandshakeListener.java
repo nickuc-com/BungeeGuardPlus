@@ -84,10 +84,10 @@ public class PaperHandshakeListener extends AbstractHandshakeListener implements
                 this.logger.warning("Denying connection from " + ip + fail.describeConnection() + " - reason: " + fail.reason().name());
             }
 
-            if (fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE) {
-                e.setFailMessage(this.noDataKickMessage);
-            } else {
+            if (fail.reason() == BungeeCordHandshake.Fail.Reason.INCORRECT_TOKEN) {
                 e.setFailMessage(this.invalidTokenKickMessage);
+            } else {
+                e.setFailMessage(this.noDataKickMessage);
             }
 
             e.setFailed(true);

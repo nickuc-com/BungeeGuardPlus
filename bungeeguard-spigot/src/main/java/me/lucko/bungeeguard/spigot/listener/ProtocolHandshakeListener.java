@@ -97,10 +97,10 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
                 }
 
                 String kickMessage;
-                if (fail.reason() == BungeeCordHandshake.Fail.Reason.INVALID_HANDSHAKE) {
-                    kickMessage = ProtocolHandshakeListener.this.noDataKickMessage;
-                } else {
+                if (fail.reason() == BungeeCordHandshake.Fail.Reason.INCORRECT_TOKEN) {
                     kickMessage = ProtocolHandshakeListener.this.invalidTokenKickMessage;
+                } else {
+                    kickMessage = ProtocolHandshakeListener.this.noDataKickMessage;
                 }
 
                 try {
