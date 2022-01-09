@@ -80,13 +80,21 @@ public class BungeeCordHandshake {
         }
 
         String[] split = handshake.split("\00");
-        if (split.length != 3 && split.length != 4) {
+        boolean isFloodgate = split.length == 5 && split[1].startsWith("^Floodgate^");
+        if (!isFloodgate && split.length != 3 && split.length != 4) {
             return new Fail(Fail.Reason.INVALID_HANDSHAKE, encodeBase64(handshake));
         }
 
+        int readIndex;
         String serverHostname = split[0];
-        String socketAddressHostname = split[1];
-        UUID uniqueId = UUID.fromString(split[2].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+        if (isFloodgate) {
+            serverHostname += "\00" + split[1];
+            readIndex = 2;
+        } else {
+            readIndex = 1;
+        }
+        String socketAddressHostname = split[readIndex++];
+        UUID uniqueId = UUID.fromString(split[readIndex++].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
 
         String connectionDescription = uniqueId + " @ " + encodeBase64(socketAddressHostname);
 
@@ -94,7 +102,7 @@ public class BungeeCordHandshake {
             return new Fail(Fail.Reason.NO_TOKEN, connectionDescription);
         }
 
-        List<JsonObject> properties = new LinkedList<>(GSON.fromJson(split[3], PROPERTY_LIST_TYPE));
+        List<JsonObject> properties = new LinkedList<>(GSON.fromJson(split[readIndex], PROPERTY_LIST_TYPE));
         if (properties.isEmpty()) {
             return new Fail(Fail.Reason.NO_TOKEN, connectionDescription);
         }
