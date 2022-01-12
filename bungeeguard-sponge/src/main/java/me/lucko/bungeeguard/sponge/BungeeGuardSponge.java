@@ -144,7 +144,7 @@ public final class BungeeGuardSponge implements BungeeGuardBackend, CommandExecu
         try {
             return String.join("\n§r", config.getNode(key).getList(TypeToken.of(String.class)));
         } catch (ObjectMappingException e) {
-            this.logger.error("Unable to load tokens", e);
+            this.logger.error("Unable to load kick message \"" + key + "\".", e);
             return "Message error";
         }
     }
