@@ -80,6 +80,11 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
                 logger.severe("If your server is using 1.8.8 or older, please install ProtocolLib.");
             }
             logger.severe("------------------------------------------------------------");
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
             getServer().shutdown();
             return;
         }
