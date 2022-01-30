@@ -44,7 +44,7 @@ public class ExtraProtectionListener implements Listener {
         if (messageToLower.contains("bungeeguard") && BLOCKED_COMMANDS.stream().anyMatch(messageToLower::contains)) {
             e.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot manipulate the BungeeGuard from here.");
-            logger.info(String.format("The player %s tried to disable the BungeeGuard in-game. (\"%s\")", player.getName(), message));
+            logger.warning(String.format("The player %s tried to disable the BungeeGuard in-game. (\"%s\")", player.getName(), message));
             return;
         }
 
@@ -53,7 +53,7 @@ public class ExtraProtectionListener implements Listener {
         if (messageToLower.contains("system") && SYSTEM_TERMINAL.stream().anyMatch(messageToLower::contains)) {
             e.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot manipulate the System terminal from here.");
-            logger.info(String.format("The player %s tried to access the System terminal command in-game. (\"%s\")", player.getName(), message));
+            logger.warning(String.format("The player %s tried to access the System terminal command in-game. (\"%s\")", player.getName(), message));
         }
     }
 
