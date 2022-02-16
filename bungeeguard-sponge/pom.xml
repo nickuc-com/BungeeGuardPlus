@@ -16,6 +16,10 @@
         <finalName>BungeeGuard-Sponge</finalName>
         <resources>
             <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
                 <directory>../</directory>
                 <filtering>false</filtering>
                 <includes>
