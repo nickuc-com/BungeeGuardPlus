@@ -71,7 +71,7 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
 
         } else {
             logger.severe("------------------------------------------------------------");
-            logger.severe("BungeeGuard is unable to listen for handshakes! The server will now shut down.");
+            logger.severe("BungeeGuard+ is unable to listen for handshakes! The server will now shut down.");
             logger.severe("");
             if (isPaperServer()) {
                 logger.severe("Please install ProtocolLib in order to use this plugin.");
@@ -96,12 +96,12 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            sender.sendMessage(ChatColor.RED + "Running BungeeGuard v" + getDescription().getVersion() + " (Adapted for nLogin)");
+            sender.sendMessage(ChatColor.RED + "Running BungeeGuard+ v" + getDescription().getVersion() + " (Adapted for nLogin)");
             return true;
         }
 
         if (args.length == 0 || !args[0].equalsIgnoreCase("reload")) {
-            sender.sendMessage(ChatColor.RED + "Running BungeeGuard v" + getDescription().getVersion() + " (Adapted for nLogin)");
+            sender.sendMessage(ChatColor.RED + "Running BungeeGuard+ v" + getDescription().getVersion() + " (Adapted for nLogin)");
             sender.sendMessage(ChatColor.GRAY + "Use '/bungeeguard reload' to reload the configuration.");
             return true;
         }

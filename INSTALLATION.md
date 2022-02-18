@@ -6,7 +6,7 @@ If you have access to the underlying system and are able to setup firewall rules
 
 The latest versions of BungeeGuard can be found from:
 
-* [GitHub](https://github.com/nickuc/BungeeGuard/releases)
+* [GitHub](https://github.com/nickuc/BungeeGuardPlus/releases)
 
 ### On your proxy...
 

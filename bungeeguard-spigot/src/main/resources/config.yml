@@ -1,4 +1,4 @@
-# BungeeGuard Configuration
+# BungeeGuard+ Configuration
 
 # Allowed authentication tokens.
 allowed-tokens:
@@ -9,7 +9,7 @@ allowed-tokens:
 # Kick message sent to connections without any forwarded data from the proxy.
 # Most likely a vanilla client connecting directly to the server, bypassing the proxy.
 no-data-kick-message:
-  - '&cFollow the step by step of installing nLogin on Bungeecord:'
+  - '&cFollow the step by step of installing nLogin on proxy servers:'
   - '&bhttps://www.nickuc.com/docs/bungeeguard'
   - ''
   - '&cIn case of problems, contact our support: &bhttps://www.nickuc.com/discord'
@@ -20,4 +20,4 @@ no-data-kick-message:
 invalid-token-kick-message:
   - '&cSorry, but an invalid authentication code has been provided.'
   - ''
-  - '&cMake sure that you configured using the same token as the Bungeecord.'
+  - '&cMake sure that you configured using the same token as the proxy server.'
