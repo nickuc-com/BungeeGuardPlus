@@ -26,6 +26,7 @@
 package me.lucko.bungeeguard.bungee;
 
 import net.md_5.bungee.connection.LoginResult;
+import net.md_5.bungee.protocol.Property;
 
 public class SpoofedLoginResultLegacy extends SpoofedLoginResult {
 

@@ -73,6 +73,20 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
     @Override
     public void onEnable() {
 
+        // verify outdated BungeeCord version
+        try {
+            Class.forName("net.md_5.bungee.protocol.Property");
+        } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
+            getLogger().log(Level.SEVERE, "You are using an outdated version of BungeeCord!");
+            getLogger().log(Level.SEVERE, "Please update it at https://papermc.io/downloads#Waterfall");
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+
         // load a token from the config, if present
         ConfigurationProvider provider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 
