@@ -50,7 +50,7 @@ public class BungeeCordHandshake {
     /** The key used to define the value of properties in the handshake. */
     private static final String PROPERTY_VALUE_KEY = "value";
     /** The maximum allowed length of the handshake. */
-    private static final int HANDSHAKE_LENGTH_LIMIT = 2500;
+    private static final int HANDSHAKE_LENGTH_LIMIT = 5_000;
 
     /** Shared Gson instance. */
     private static final Gson GSON = new Gson();
