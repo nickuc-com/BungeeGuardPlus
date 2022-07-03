@@ -39,6 +39,7 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.File;
 import java.security.SecureRandom;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * BungeeCord plugin which injects a special authentication token into a players
@@ -77,10 +78,13 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
         try {
             Class.forName("net.md_5.bungee.protocol.Property");
         } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
-            getLogger().log(Level.SEVERE, "You are using an outdated version of BungeeCord!");
-            getLogger().log(Level.SEVERE, "Please update it at https://papermc.io/downloads#Waterfall");
+            Logger logger = getLogger();
+            logger.log(Level.SEVERE, "*--------------------------------------------------------------*");
+            logger.log(Level.SEVERE, "*      You are using an outdated version of BungeeCord!        *");
+            logger.log(Level.SEVERE, "*  Please update it at https://papermc.io/downloads#Waterfall  *");
+            logger.log(Level.SEVERE, "*--------------------------------------------------------------*");
             try {
-                Thread.sleep(10000);
+                Thread.sleep(15_000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

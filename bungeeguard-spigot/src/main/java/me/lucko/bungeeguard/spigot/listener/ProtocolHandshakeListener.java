@@ -31,18 +31,13 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.injector.temporary.MinimalInjector;
-import com.comphenix.protocol.injector.temporary.TemporaryPlayerFactory;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
-
 import me.lucko.bungeeguard.backend.BungeeGuardBackend;
 import me.lucko.bungeeguard.backend.TokenStore;
 import me.lucko.bungeeguard.backend.listener.AbstractHandshakeListener;
 import me.lucko.bungeeguard.spigot.BungeeCordHandshake;
-
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -134,9 +129,8 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
         // send custom disconnect message to client
         ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
 
-        // call PlayerConnection#disconnect to ensure the underlying socket is closed
-        MinimalInjector injector = TemporaryPlayerFactory.getInjectorFromPlayer(player);
-        injector.disconnect("");
+        // call TemporaryPlayer#disconnect to ensure the underlying socket is closed
+        player.kickPlayer("");
     }
 
 }
