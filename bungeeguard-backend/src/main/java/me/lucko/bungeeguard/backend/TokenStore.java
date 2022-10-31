@@ -59,4 +59,13 @@ public class TokenStore {
         return this.allowedTokens.contains(token);
     }
 
+    /**
+     * Has the server owner bothered to configure their tokens correctly...?
+     *
+     * @return true if BungeeGuard has not yet been configured
+     */
+    public boolean isUsingDefaultConfig() {
+        return this.allowedTokens.contains("YOUR_TOKEN");
+    }
+
 }
