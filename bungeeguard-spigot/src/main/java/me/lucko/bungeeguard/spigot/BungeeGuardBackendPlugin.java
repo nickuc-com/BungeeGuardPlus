@@ -56,7 +56,8 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
         this.tokenStore = new TokenStore(this);
         this.tokenStore.load();
 
-        if (!getServer().spigot().getSpigotConfig().getBoolean("settings.bungeecord", false)) {
+        if (hasSpigotConfigMethod() &&
+                !getServer().spigot().getSpigotConfig().getBoolean("settings.bungeecord", false)) {
             getLogger().severe("------------------------------------------------------------");
             getLogger().severe("'settings.bungeecord' is set to false in spigot.yml.");
             getLogger().severe("");
@@ -130,6 +131,15 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
     @Override
     public List<String> getTokens() {
         return getConfig().getStringList("allowed-tokens");
+    }
+
+    private boolean hasSpigotConfigMethod() {
+        try {
+            getServer().spigot().getSpigotConfig();
+            return true;
+        } catch (NoSuchMethodError e) {
+            return false;
+        }
     }
 
     private static boolean isPaperHandshakeEvent() {
