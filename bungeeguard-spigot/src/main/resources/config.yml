@@ -11,7 +11,7 @@ allowed-tokens:
 no-data-kick-message:
   - '&4[BungeeGuard]'
   - ''
-  - '&fPlease install &aBungeeGuard+ &fon the proxy server'
+  - '&fPlease install &aBungeeGuard+ &fon all servers'
   - '&fto finish securing your proxy setup.'
   - ''
   - '§7More information:'
