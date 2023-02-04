@@ -27,16 +27,17 @@ package me.lucko.bungeeguard.spigot;
 
 import me.lucko.bungeeguard.backend.BungeeGuardBackend;
 import me.lucko.bungeeguard.backend.TokenStore;
-import me.lucko.bungeeguard.spigot.listener.PaperHandshakeListener;
 import me.lucko.bungeeguard.spigot.listener.ExtraProtectionListener;
+import me.lucko.bungeeguard.spigot.listener.PaperHandshakeListener;
 import me.lucko.bungeeguard.spigot.listener.ProtocolHandshakeListener;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -131,6 +132,11 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
     @Override
     public List<String> getTokens() {
         return getConfig().getStringList("allowed-tokens");
+    }
+
+    @Override
+    public Path getConfigPath() {
+        return new File(getDataFolder(), "config.yml").toPath();
     }
 
     private boolean hasSpigotConfigMethod() {

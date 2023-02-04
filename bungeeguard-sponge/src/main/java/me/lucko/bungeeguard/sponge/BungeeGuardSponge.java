@@ -27,14 +27,11 @@ package me.lucko.bungeeguard.sponge;
 
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
-
 import me.lucko.bungeeguard.backend.BungeeGuardBackend;
 import me.lucko.bungeeguard.backend.TokenStore;
-
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
-
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
@@ -157,6 +154,11 @@ public final class BungeeGuardSponge implements BungeeGuardBackend, CommandExecu
             this.logger.error("Unable to load tokens", e);
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public Path getConfigPath() {
+        return configPath;
     }
 
     @Override

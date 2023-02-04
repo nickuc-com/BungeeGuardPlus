@@ -26,7 +26,6 @@
 package me.lucko.bungeeguard.bungee;
 
 import com.google.common.base.Preconditions;
-
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;

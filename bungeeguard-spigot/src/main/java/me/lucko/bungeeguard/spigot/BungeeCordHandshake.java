@@ -32,11 +32,7 @@ import me.lucko.bungeeguard.backend.TokenStore;
 
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Encapsulates a BungeeCord "ip forwarding" handshake result.
@@ -75,10 +71,6 @@ public class BungeeCordHandshake {
     }
 
     private static BungeeCordHandshake decodeAndVerify0(String handshake, TokenStore tokenStore) throws Exception {
-        if (tokenStore.isUsingDefaultConfig()) {
-            return new Fail(Fail.Reason.INCORRECT_TOKEN, "Allowed tokens have not been configured! Please refer to https://docs.nickuc.com/bungeeguard for help.");
-        }
-
         if (handshake.length() > HANDSHAKE_LENGTH_LIMIT) {
             return new Fail(Fail.Reason.INVALID_HANDSHAKE, "handshake length " + handshake.length() + " is > " + HANDSHAKE_LENGTH_LIMIT);
         }

@@ -25,6 +25,10 @@
 
 package me.lucko.bungeeguard.backend;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +60,24 @@ public class TokenStore {
      * @return true if allowed
      */
     public boolean isAllowed(String token) {
+        // Add token if default configuration is being used
+        if (isUsingDefaultConfig() && !token.equals("YOUR_TOKEN")) {
+            this.allowedTokens.clear();
+            this.allowedTokens.add(token);
+
+            Path configPath = this.plugin.getConfigPath();
+            try {
+                byte[] newContent = new String(Files.readAllBytes(configPath), StandardCharsets.UTF_8)
+                        .replace("YOUR_TOKEN", token)
+                        .getBytes(StandardCharsets.UTF_8);
+                Files.write(configPath, newContent);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to save BungeeGuard token", e);
+            }
+
+            return true;
+        }
+
         return this.allowedTokens.contains(token);
     }
 

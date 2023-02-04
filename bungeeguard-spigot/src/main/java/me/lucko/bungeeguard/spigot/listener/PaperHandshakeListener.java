@@ -26,11 +26,9 @@
 package me.lucko.bungeeguard.spigot.listener;
 
 import com.destroystokyo.paper.event.player.PlayerHandshakeEvent;
-
 import me.lucko.bungeeguard.backend.TokenStore;
 import me.lucko.bungeeguard.backend.listener.AbstractHandshakeListener;
 import me.lucko.bungeeguard.spigot.BungeeCordHandshake;
-
 import me.lucko.bungeeguard.spigot.BungeeGuardBackendPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -44,7 +42,7 @@ import java.util.logging.Logger;
  * A handshake listener using Paper's {@link PlayerHandshakeEvent}.
  */
 public class PaperHandshakeListener extends AbstractHandshakeListener implements Listener {
-    
+
     private static final Method getOriginalSocketAddressHostname;
     static {
         Method method = null;

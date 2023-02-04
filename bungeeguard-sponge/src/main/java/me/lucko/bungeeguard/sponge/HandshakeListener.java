@@ -28,7 +28,6 @@ package me.lucko.bungeeguard.sponge;
 import me.lucko.bungeeguard.backend.BungeeGuardBackend;
 import me.lucko.bungeeguard.backend.TokenStore;
 import me.lucko.bungeeguard.backend.listener.AbstractHandshakeListener;
-
 import org.slf4j.Logger;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
