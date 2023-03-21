@@ -34,6 +34,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -57,8 +58,7 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
         this.tokenStore = new TokenStore(this);
         this.tokenStore.load();
 
-        if (hasSpigotConfigMethod() &&
-                !getServer().spigot().getSpigotConfig().getBoolean("settings.bungeecord", false)) {
+        if (hasSpigotConfigMethod() && !isBungeeEnabled()) {
             getLogger().severe("------------------------------------------------------------");
             getLogger().severe("'settings.bungeecord' is set to false in spigot.yml.");
             getLogger().severe("");
@@ -137,6 +137,11 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
     @Override
     public Path getConfigPath() {
         return new File(getDataFolder(), "config.yml").toPath();
+    }
+
+    private boolean isBungeeEnabled() {
+        YamlConfiguration spigotConfig = getServer().spigot().getSpigotConfig();
+        return spigotConfig.getBoolean("settings.bungeecord") || spigotConfig.getBoolean("spigot.settings.bungeecord");
     }
 
     private boolean hasSpigotConfigMethod() {
