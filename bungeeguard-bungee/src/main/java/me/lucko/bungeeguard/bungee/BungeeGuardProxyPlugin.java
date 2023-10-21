@@ -90,6 +90,19 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
             return;
         }
 
+        if (!getProxy().getConfig().isIpForward()) {
+            getLogger().severe("*-----------------------------------------------------------*");
+            getLogger().severe("'ip_forward' is set to false in BungeeCord's config.yml.");
+            getLogger().severe("");
+            getLogger().severe("BungeeGuard will probably not work unless this property is set to true.");
+            getLogger().severe("*-----------------------------------------------------------*");
+            try {
+                Thread.sleep(15_000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         // load a token from the config, if present
         ConfigurationProvider provider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 

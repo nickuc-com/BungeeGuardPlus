@@ -59,12 +59,12 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
         this.tokenStore.load();
 
         if (hasSpigotConfigMethod() && !isBungeeEnabled()) {
-            getLogger().severe("------------------------------------------------------------");
+            getLogger().severe("*-----------------------------------------------------------*");
             getLogger().severe("'settings.bungeecord' is set to false in spigot.yml.");
             getLogger().severe("");
             getLogger().severe("BungeeGuard cannot function unless this property is set to true.");
             getLogger().severe("The server will now shutdown as a precaution.");
-            getLogger().severe("------------------------------------------------------------");
+            getLogger().severe("*-----------------------------------------------------------*");
             getServer().shutdown();
             return;
         }
@@ -83,7 +83,7 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
             listener.registerAdapter(this);
 
         } else {
-            logger.severe("------------------------------------------------------------");
+            logger.severe("*----------------------------------------------------------*");
             logger.severe("BungeeGuard+ is unable to listen for handshakes! The server will now shut down.");
             logger.severe("");
             if (isPaperServer()) {
@@ -92,7 +92,7 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
                 logger.severe("If your server is using 1.9.4 or newer, please upgrade to Paper - https://papermc.io");
                 logger.severe("If your server is using 1.8.8 or older, please install ProtocolLib.");
             }
-            logger.severe("------------------------------------------------------------");
+            logger.severe("*----------------------------------------------------------*");
             try {
                 Thread.sleep(15000);
             } catch (InterruptedException interruptedException) {
