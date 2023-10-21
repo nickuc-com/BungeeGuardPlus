@@ -6,6 +6,7 @@ authors: [Luck, NickUC]
 main: me.lucko.bungeeguard.spigot.BungeeGuardBackendPlugin
 softdepend: [ProtocolLib]
 api-version: 1.13
+folia-supported: true
 
 commands:
   bungeeguard:
