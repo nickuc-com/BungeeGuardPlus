@@ -7,11 +7,11 @@
     <parent>
         <groupId>me.lucko</groupId>
         <artifactId>bungeeguard</artifactId>
-        <version>1.4.1</version>
+        <version>1.4.2</version>
     </parent>
 
     <artifactId>bungeeguard-spigot</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 
     <build>
         <resources>
