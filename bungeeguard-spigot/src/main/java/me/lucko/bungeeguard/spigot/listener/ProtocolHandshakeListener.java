@@ -116,6 +116,7 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
             // we can re-encode the handshake now so Spigot can pick up the spoofed stuff.
             BungeeCordHandshake.Success data = (BungeeCordHandshake.Success) decoded;
             packet.getStrings().write(0, data.encode());
+            ExtraProtectionListener.SUCCESSFULLY_DECODED = true;
         }
     }
 

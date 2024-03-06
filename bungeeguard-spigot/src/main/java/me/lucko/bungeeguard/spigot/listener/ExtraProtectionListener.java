@@ -15,6 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.net.InetAddress;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ public class ExtraProtectionListener implements Listener {
 
     private static final ImmutableSet<String> BLOCKED_COMMANDS = ImmutableSet.of("plugman", "system", "atlas");
     private static final ImmutableSet<String> SYSTEM_TERMINAL = ImmutableSet.of("terminal", "cmd", "prompt");
+    public static boolean SUCCESSFULLY_DECODED;
 
     private final Logger logger;
 
@@ -40,7 +42,7 @@ public class ExtraProtectionListener implements Listener {
         String message = e.getMessage();
         String messageToLower = message.toLowerCase();
 
-        // disable BungeeGuard in-game manipulation
+        // Disable BungeeGuard in-game manipulation
         if (messageToLower.contains("bungeeguard") && BLOCKED_COMMANDS.stream().anyMatch(messageToLower::contains)) {
             e.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot manipulate the BungeeGuard from here.");
@@ -48,7 +50,7 @@ public class ExtraProtectionListener implements Listener {
             return;
         }
 
-        // disable the '/system terminal' command in-game, since it opens security breaches.
+        // Disable the "/system terminal" command in-game, since it opens security breaches.
         // https://github.com/eduardo-mior/System/pull/8
         if (messageToLower.contains("system") && SYSTEM_TERMINAL.stream().anyMatch(messageToLower::contains)) {
             e.setCancelled(true);
@@ -59,11 +61,28 @@ public class ExtraProtectionListener implements Listener {
 
     @EventHandler
     public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
-        InetAddress address = e.getAddress();
-        // if the ip address is null, this can cause an exception and bypass BungeeGuard.
-        if (address == null || address.getHostAddress() == null) {
-            e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Unable to authenticate, because an ip address was provided.");
+        InetAddress ip = e.getAddress();
+
+        // If the IP address is null, this can cause an exception and bypass BungeeGuard.
+        if (ip == null || ip.getHostAddress() == null) {
+            e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Unable to authenticate, because an invalid IP address was provided.");
+        }
+
+        // ProtocolLib has failed to process handshake packets in the past.
+        // Therefore, we double-check that the handshake has been validated previously.
+        // https://github.com/dmulloy2/ProtocolLib/issues/2601
+        if (!SUCCESSFULLY_DECODED) {
+            e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Unable to authenticate, because the handshake validation could not be confirmed.");
         }
     }
 
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent e) {
+        // ProtocolLib has failed to process handshake packets in the past.
+        // Therefore, we double-check that the handshake has been validated previously.
+        // https://github.com/dmulloy2/ProtocolLib/issues/2601
+        if (!SUCCESSFULLY_DECODED) {
+            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Unable to authenticate, because the handshake validation could not be confirmed.");
+        }
+    }
 }

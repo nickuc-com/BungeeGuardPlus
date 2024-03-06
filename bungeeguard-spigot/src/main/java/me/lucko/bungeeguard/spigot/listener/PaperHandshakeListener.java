@@ -97,6 +97,6 @@ public class PaperHandshakeListener extends AbstractHandshakeListener implements
         e.setSocketAddressHostname(data.socketAddressHostname());
         e.setUniqueId(data.uniqueId());
         e.setPropertiesJson(data.propertiesJson());
+        ExtraProtectionListener.SUCCESSFULLY_DECODED = true;
     }
-
 }
