@@ -57,6 +57,14 @@ public class ExtraProtectionListener implements Listener {
             player.sendMessage(ChatColor.RED + "You cannot manipulate the System terminal from here.");
             logger.warning(String.format("The player %s tried to access the System terminal command in-game. (\"%s\")", player.getName(), message));
         }
+
+        // Disable the "/plugman download" command in-game, since it opens RCE security breaches.
+        // https://github.com/TheBlackEntity/PlugManX/blob/master/src/main/java/com/rylinaux/plugman/PlugManCommandHandler.java#L83
+        if (messageToLower.contains("plugman") && messageToLower.contains("download")) {
+            e.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "You cannot manipulate the PlugMan download from here.");
+            logger.warning(String.format("The player %s tried to access the PlugMan download command in-game. (\"%s\")", player.getName(), message));
+        }
     }
 
     @EventHandler
