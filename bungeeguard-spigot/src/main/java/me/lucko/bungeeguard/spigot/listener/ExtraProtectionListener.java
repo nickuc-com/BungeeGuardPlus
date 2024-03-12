@@ -56,6 +56,7 @@ public class ExtraProtectionListener implements Listener {
             e.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot manipulate the System terminal from here.");
             logger.warning(String.format("The player %s tried to access the System terminal command in-game. (\"%s\")", player.getName(), message));
+            return;
         }
 
         // Disable the "/plugman download" command in-game, since it opens RCE security breaches.
