@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 public class PaperHandshakeListener extends AbstractHandshakeListener implements Listener {
 
     private static final Method getOriginalSocketAddressHostname;
+
     static {
         Method method = null;
         try {
@@ -69,17 +70,17 @@ public class PaperHandshakeListener extends AbstractHandshakeListener implements
             BungeeCordHandshake.Fail fail = (BungeeCordHandshake.Fail) decoded;
 
             // if the logging is not throttled, we send the error message
-            if (!isThrottled()) {
-                String ip = "";
+            if (isRateLimitAllowed()) {
+                String ip = "null";
                 if (getOriginalSocketAddressHostname != null) {
                     try {
-                        ip = getOriginalSocketAddressHostname.invoke(e) + " - ";
+                        ip = (String) getOriginalSocketAddressHostname.invoke(e);
                     } catch (ReflectiveOperationException ex) {
                         this.logger.log(Level.SEVERE, "Unable to get original address", ex);
                     }
                 }
 
-                this.logger.warning("Denying connection from " + ip + fail.describeConnection() + " - reason: " + fail.reason().name());
+                this.logger.warning("Denying connection from " + ip + " - " + (plugin.isVerbose() ? fail.describeConnection() : "") + " - reason: " + fail.reason().name());
             }
 
             if (fail.reason() == BungeeCordHandshake.Fail.Reason.INCORRECT_TOKEN) {

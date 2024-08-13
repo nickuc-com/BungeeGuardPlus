@@ -54,12 +54,16 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
     }
 
     public void registerAdapter(Plugin plugin) {
-        ProtocolLibrary.getProtocolManager().addPacketListener(new Adapter(plugin));
+        ProtocolLibrary.getProtocolManager().addPacketListener(new Adapter(plugin, super.plugin));
     }
 
     private final class Adapter extends PacketAdapter {
-        Adapter(Plugin plugin) {
+
+        private final BungeeGuardBackend backend;
+
+        Adapter(Plugin plugin, BungeeGuardBackend backend) {
             super(plugin, ListenerPriority.LOWEST, PacketType.Handshake.Client.SET_PROTOCOL);
+            this.backend = backend;
         }
 
         @Override
@@ -80,7 +84,7 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
                 Player player = event.getPlayer();
 
                 // if the logging is not throttled, we send the error message
-                if (!isThrottled()) {
+                if (isRateLimitAllowed()) {
                     String ip = "null";
                     InetSocketAddress address = player.getAddress();
                     if (address != null) {
@@ -89,7 +93,7 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
                             ip = BungeeCordHandshake.encodeBase64(ip);
                         }
                     }
-                    this.plugin.getLogger().warning("Denying connection from " + ip + " - " + fail.describeConnection() + " - reason: " + fail.reason().name());
+                    this.plugin.getLogger().warning("Denying connection from " + ip + " - " + (backend.isVerbose() ? fail.describeConnection() : "") + " - reason: " + fail.reason().name());
                 }
 
                 String kickMessage;

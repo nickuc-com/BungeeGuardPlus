@@ -27,3 +27,7 @@ invalid-token-kick-message:
   - ''
   - '§7More information:'
   - '&bdocs.nickuc.com/bungeeguard'
+
+# Defines if BungeeGuard should detail errors in the console.
+# Useful for debugging purposes.
+verbose: false

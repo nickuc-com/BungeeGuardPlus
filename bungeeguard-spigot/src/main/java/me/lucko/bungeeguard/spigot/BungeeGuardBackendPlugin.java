@@ -139,6 +139,11 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
         return new File(getDataFolder(), "config.yml").toPath();
     }
 
+    @Override
+    public boolean isVerbose() {
+        return getConfig().getBoolean("verbose", false);
+    }
+
     private boolean isBungeeEnabled() {
         YamlConfiguration spigotConfig = getServer().spigot().getSpigotConfig();
         return spigotConfig.getBoolean("settings.bungeecord") || spigotConfig.getBoolean("spigot.settings.bungeecord");
@@ -173,5 +178,4 @@ public class BungeeGuardBackendPlugin extends JavaPlugin implements BungeeGuardB
             return false;
         }
     }
-
 }

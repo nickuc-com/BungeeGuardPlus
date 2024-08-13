@@ -66,7 +66,7 @@ public class HandshakeListener extends AbstractHandshakeListener {
 
         if (bungeeGuardToken == null || !this.tokenStore.isAllowed(bungeeGuardToken)) {
             // if the logging is not throttled, we send the error message
-            if (!isThrottled()) {
+            if (isRateLimitAllowed()) {
                 String connectionDescription = profile.getUniqueId() + " @ " + e.getConnection().getAddress().getHostString();
                 String reason = bungeeGuardToken == null ? "No Token" : "Invalid token";
 

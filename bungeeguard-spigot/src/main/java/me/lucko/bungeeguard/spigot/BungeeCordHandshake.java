@@ -90,7 +90,12 @@ public class BungeeCordHandshake {
             readIndex = 1;
         }
         String socketAddressHostname = split[readIndex++];
-        UUID uniqueId = UUID.fromString(split[readIndex++].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+        UUID uniqueId;
+        try {
+            uniqueId = UUID.fromString(split[readIndex++].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+        } catch (NumberFormatException e) {
+            return new Fail(Fail.Reason.INVALID_UNIQUE_ID, encodeBase64(handshake));
+        }
 
         String connectionDescription = uniqueId + " @ " + encodeBase64(socketAddressHostname);
 
@@ -108,7 +113,7 @@ public class BungeeCordHandshake {
             JsonObject property = iterator.next();
             if (property.get(PROPERTY_NAME_KEY).getAsString().equals(BUNGEEGUARD_TOKEN_NAME)) {
                 if (bungeeGuardToken != null) {
-                    return new Fail(Fail.Reason.INCORRECT_TOKEN, connectionDescription + " - more than one token");
+                    return new Fail(Fail.Reason.DUPLICATED_TOKEN, connectionDescription);
                 }
 
                 bungeeGuardToken = property.get(PROPERTY_VALUE_KEY).getAsString();
@@ -195,8 +200,7 @@ public class BungeeCordHandshake {
         }
 
         public enum Reason {
-            INVALID_HANDSHAKE, NO_TOKEN, INCORRECT_TOKEN
+            INVALID_HANDSHAKE, INVALID_UNIQUE_ID, NO_TOKEN, DUPLICATED_TOKEN, INCORRECT_TOKEN
         }
     }
-
 }

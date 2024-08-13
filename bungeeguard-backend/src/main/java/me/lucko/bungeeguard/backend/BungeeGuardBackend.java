@@ -12,4 +12,6 @@ public interface BungeeGuardBackend {
     Path getConfigPath();
 
     void reloadConfig();
+
+    boolean isVerbose();
 }

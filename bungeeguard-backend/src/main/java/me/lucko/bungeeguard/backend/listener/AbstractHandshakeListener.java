@@ -28,6 +28,8 @@ package me.lucko.bungeeguard.backend.listener;
 import me.lucko.bungeeguard.backend.BungeeGuardBackend;
 import me.lucko.bungeeguard.backend.TokenStore;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * An abstract handshake listener.
  */
@@ -38,7 +40,7 @@ public abstract class AbstractHandshakeListener {
     protected final String noDataKickMessage;
     protected final String invalidTokenKickMessage;
 
-    private long throttle;
+    private final AtomicLong throttle = new AtomicLong();
 
     protected AbstractHandshakeListener(BungeeGuardBackend plugin, TokenStore tokenStore) {
         this.plugin = plugin;
@@ -47,13 +49,8 @@ public abstract class AbstractHandshakeListener {
         this.invalidTokenKickMessage = plugin.getKickMessage("invalid-token-kick-message");
     }
 
-    public boolean isThrottled() {
-        long cur = System.currentTimeMillis();
-        if (cur - this.throttle >= 1000L) {
-            this.throttle = cur;
-            return false;
-        } else {
-            return true;
-        }
+    public boolean isRateLimitAllowed() {
+        long current = System.currentTimeMillis();
+        return current - this.throttle.getAndSet(current) >= 1000;
     }
 }

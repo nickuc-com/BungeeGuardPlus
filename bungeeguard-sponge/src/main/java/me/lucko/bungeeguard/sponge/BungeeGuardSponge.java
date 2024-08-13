@@ -170,4 +170,9 @@ public final class BungeeGuardSponge implements BungeeGuardBackend, CommandExecu
             throw new RuntimeException("Unable to load config", e);
         }
     }
+
+    @Override
+    public boolean isVerbose() {
+        return this.config.getNode("verbose").getBoolean(false);
+    }
 }
