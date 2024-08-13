@@ -1,9 +1,13 @@
-# 💂 BungeeGuard
+<div id="intro" align="center">
+  <h1>💂 BungeeGuard+</h1>
+  <h3>BungeeGuard is a plugin-based security/firewall solution for <a href="https://www.spigotmc.org/wiki/bungeecord/">BungeeCord</a> and <a href="https://velocitypowered.com/">Velocity</a> proxies.</h3>
+  <br />
+</div>
 
-BungeeGuard is a plugin-based security/firewall solution for [BungeeCord](https://www.spigotmc.org/wiki/bungeecord/) (and [Velocity](https://velocitypowered.com/)) proxies.
+## Useful Links
 
-* [Download](https://github.com/nickuc/BungeeGuard/releases)
-* [Install Guide](INSTALLATION.md)
+- [Download](https://github.com/nickuc/BungeeGuard/releases)
+- [Install Guide](INSTALLATION.md)
 
 ## The problem
 
