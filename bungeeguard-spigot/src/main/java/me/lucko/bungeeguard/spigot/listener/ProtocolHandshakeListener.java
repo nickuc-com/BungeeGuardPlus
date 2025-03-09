@@ -107,6 +107,7 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
                     closeConnection(player, kickMessage);
                 } catch (Exception e) {
                     this.plugin.getLogger().log(Level.SEVERE, "An error occurred while closing connection for " + player, e);
+                    event.setCancelled(true);
                 }
 
                 // just in-case the connection didn't close, screw up the hostname
@@ -125,17 +126,19 @@ public class ProtocolHandshakeListener extends AbstractHandshakeListener {
     }
 
     private static void closeConnection(Player player, String kickMessage) throws Exception {
-        PacketContainer packet = new PacketContainer(PacketType.Login.Server.DISCONNECT);
-        packet.getModifier().writeDefaults();
+        try {
+            PacketContainer packet = new PacketContainer(PacketType.Login.Server.DISCONNECT);
+            packet.getModifier().writeDefaults();
 
-        WrappedChatComponent component = WrappedChatComponent.fromJson(ComponentSerializer.toString(TextComponent.fromLegacyText(kickMessage)));
-        packet.getChatComponents().write(0, component);
+            WrappedChatComponent component = WrappedChatComponent.fromJson(ComponentSerializer.toString(TextComponent.fromLegacyText(kickMessage)));
+            packet.getChatComponents().write(0, component);
 
-        // send custom disconnect message to client
-        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
-
-        // call TemporaryPlayer#disconnect to ensure the underlying socket is closed
-        player.kickPlayer("");
+            // send custom disconnect message to client
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+        } finally {
+            // call TemporaryPlayer#disconnect to ensure the underlying socket is closed
+            player.kickPlayer("");
+        }
     }
 
 }
