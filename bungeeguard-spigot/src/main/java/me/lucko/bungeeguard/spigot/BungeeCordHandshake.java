@@ -93,7 +93,7 @@ public class BungeeCordHandshake {
         UUID uniqueId;
         try {
             uniqueId = UUID.fromString(split[readIndex++].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return new Fail(Fail.Reason.INVALID_UNIQUE_ID, encodeBase64(handshake));
         }
 
