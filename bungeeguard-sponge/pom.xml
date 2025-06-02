@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.lucko</groupId>
         <artifactId>bungeeguard</artifactId>
-        <version>1.4.5</version>
+        <version>1.4.6</version>
     </parent>
 
     <artifactId>bungeeguard-sponge</artifactId>
