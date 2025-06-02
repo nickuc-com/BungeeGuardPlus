@@ -16,14 +16,17 @@
         <finalName>BungeeGuard-Sponge</finalName>
         <resources>
             <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
                 <directory>../</directory>
                 <filtering>false</filtering>
                 <includes>
                     <include>LICENSE.txt</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.conf</include>
                 </includes>
             </resource>
         </resources>

@@ -12,6 +12,11 @@
 
     <artifactId>bungeeguard-bungee</artifactId>
 
+    <properties>
+        <maven.compiler.source>9</maven.compiler.source>
+        <maven.compiler.target>9</maven.compiler.target>
+    </properties>
+
     <build>
         <resources>
             <resource>
