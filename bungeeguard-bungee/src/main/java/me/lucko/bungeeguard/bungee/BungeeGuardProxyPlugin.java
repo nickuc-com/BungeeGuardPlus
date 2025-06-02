@@ -48,6 +48,8 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
 
     // characters to use to build a token
     private static final String TOKEN_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    // version used in token config
+    private static final int TOKEN_VERSION = 1;
 
     /**
      * Randomly generates a new token
@@ -117,7 +119,10 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
         if (tokenFile.exists()) {
             try {
                 Configuration configuration = provider.load(tokenFile);
-                this.token = configuration.getString("token", null);
+                // if the version does not match, do not load for a new token to be generated.
+                if (configuration.getInt("version", 0) >= TOKEN_VERSION) {
+                    this.token = configuration.getString("token", null);
+                }
             } catch (Exception e) {
                 getLogger().log(Level.SEVERE, "Unable to load token from config", e);
             }
@@ -128,6 +133,7 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
 
             Configuration configuration = new Configuration();
             configuration.set("token", this.token);
+            configuration.set("version", TOKEN_VERSION);
 
             try {
                 provider.save(configuration, tokenFile);
