@@ -6,12 +6,11 @@
 
     <groupId>me.lucko</groupId>
     <artifactId>bungeeguard</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>bungeeguard-bungee</module>
-        <module>bungeeguard-bungee-java9</module>
         <module>bungeeguard-backend</module>
         <module>bungeeguard-spigot</module>
         <module>bungeeguard-spigot-legacy</module>

@@ -30,7 +30,6 @@ import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.connection.LoginResult;
 import net.md_5.bungee.protocol.Property;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
@@ -41,32 +40,15 @@ import java.util.Arrays;
  * To achieve this, the stack trace is analyzed. This is kinda crappy, but is the only way
  * to modify the properties without leaking the token to other clients via the tablist.
  */
-abstract class SpoofedLoginResult extends LoginResult {
+class SpoofedLoginResult extends LoginResult {
     private static final Field PROFILE_FIELD;
-    private static final Constructor<? extends SpoofedLoginResult> OFFLINE_MODE_IMPL;
-    private static final Constructor<? extends SpoofedLoginResult> ONLINE_MODE_IMPL;
+
+    private static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     static {
-        Class<? extends SpoofedLoginResult> implClass;
-        if (classExists("java.lang.StackWalker")) {
-            try {
-                implClass = Class.forName("me.lucko.bungeeguard.bungee.SpoofedLoginResultJava9")
-                        .asSubclass(SpoofedLoginResult.class);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        } else if (classExists("jdk.internal.reflect.Reflection")) {
-            implClass = SpoofedLoginResultJdkInternal.class;
-        } else {
-            implClass = SpoofedLoginResultReflection.class;
-        }
-
         try {
             PROFILE_FIELD = InitialHandler.class.getDeclaredField("loginProfile");
             PROFILE_FIELD.setAccessible(true);
-
-            OFFLINE_MODE_IMPL = implClass.getConstructor(String.class);
-            ONLINE_MODE_IMPL = implClass.getConstructor(LoginResult.class, String.class);
         } catch (ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -76,30 +58,17 @@ abstract class SpoofedLoginResult extends LoginResult {
         LoginResult profile = handler.getLoginProfile();
         LoginResult newProfile;
 
-        try {
-            // profile is null for offline mode servers
-            if (profile == null) {
-                newProfile = OFFLINE_MODE_IMPL.newInstance(token);
-            } else {
-                newProfile = ONLINE_MODE_IMPL.newInstance(profile, token);
-            }
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+        // profile is null for offline mode servers
+        if (profile == null) {
+            newProfile = new SpoofedLoginResult(token);
+        } else {
+            newProfile = new SpoofedLoginResult(profile, token);
         }
 
         try {
             PROFILE_FIELD.set(handler, newProfile);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private static boolean classExists(String className) {
-        try {
-            Class.forName(className);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
         }
     }
 
@@ -123,9 +92,17 @@ abstract class SpoofedLoginResult extends LoginResult {
         this.offline = true;
     }
 
-    protected Property[] getSpoofedProperties(Class<?> caller) {
+    @Override
+    public Property[] getProperties() {
+        StackWalker.StackFrame frame = STACK_WALKER.walk(s ->
+                // find the first frame that starts with "net.md_5.bungee"
+                s.dropWhile(f -> !f.getClassName().startsWith("net.md_5.bungee"))
+                        .findFirst()
+                        .orElse(null)
+        );
+
         // if the getProperties method is being called by the server connector, include our token in the properties
-        if (caller == ServerConnector.class) {
+        if (frame != null && frame.getDeclaringClass() == ServerConnector.class && frame.getMethodName().equals("connected")) {
             return addTokenProperty(super.getProperties());
         } else {
             return super.getProperties();
