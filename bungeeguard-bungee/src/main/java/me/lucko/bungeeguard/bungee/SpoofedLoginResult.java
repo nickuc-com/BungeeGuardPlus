@@ -28,7 +28,7 @@ package me.lucko.bungeeguard.bungee;
 import net.md_5.bungee.ServerConnector;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.connection.LoginResult;
-import net.md_5.bungee.protocol.Property;
+import net.md_5.bungee.protocol.data.Property;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

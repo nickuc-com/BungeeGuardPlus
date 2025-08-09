@@ -46,7 +46,8 @@
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-proxy</artifactId>
             <version>${bungee.version}</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/bungeecord-proxy-${bungee.version}.jar</systemPath>
             <exclusions>
                 <exclusion>
                     <groupId>io.netty</groupId>

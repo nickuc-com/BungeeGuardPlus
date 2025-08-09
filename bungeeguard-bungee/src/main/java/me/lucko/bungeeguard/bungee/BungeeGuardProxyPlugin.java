@@ -77,12 +77,12 @@ public class BungeeGuardProxyPlugin extends Plugin implements Listener {
 
         // verify outdated BungeeCord version
         try {
-            Class.forName("net.md_5.bungee.protocol.Property");
+            Class.forName("net.md_5.bungee.protocol.data.Property");
         } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
             Logger logger = getLogger();
             logger.log(Level.SEVERE, "*--------------------------------------------------------------*");
             logger.log(Level.SEVERE, "*      You are using an outdated version of BungeeCord!        *");
-            logger.log(Level.SEVERE, "*  Please update it at https://papermc.io/downloads#Waterfall  *");
+            logger.log(Level.SEVERE, "*  Please update it at https://ci.md-5.net/job/BungeeCord/     *");
             logger.log(Level.SEVERE, "*--------------------------------------------------------------*");
             try {
                 Thread.sleep(15_000);
