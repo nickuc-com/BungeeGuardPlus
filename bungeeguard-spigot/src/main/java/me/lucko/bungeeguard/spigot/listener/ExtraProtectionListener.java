@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class ExtraProtectionListener implements Listener {
 
-    private static final ImmutableSet<String> BLOCKED_COMMANDS = ImmutableSet.of("plugman", "system", "atlas");
+    private static final ImmutableSet<String> BLOCKED_COMMANDS = ImmutableSet.of("plugman", "system", "rushyoutuber", "atlas");
     private static final ImmutableSet<String> SYSTEM_TERMINAL = ImmutableSet.of("terminal", "cmd", "prompt");
     public static boolean SUCCESSFULLY_DECODED;
 
@@ -52,7 +52,7 @@ public class ExtraProtectionListener implements Listener {
 
         // Disable the "/system terminal" command in-game, since it opens security breaches.
         // https://github.com/eduardo-mior/System/pull/8
-        if (messageToLower.contains("system") && SYSTEM_TERMINAL.stream().anyMatch(messageToLower::contains)) {
+        if ((messageToLower.contains("system") || messageToLower.contains("rushyoutuber")) && SYSTEM_TERMINAL.stream().anyMatch(messageToLower::contains)) {
             e.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot manipulate the System terminal from here.");
             logger.warning(String.format("The player %s tried to access the System terminal command in-game. (\"%s\")", player.getName(), message));
